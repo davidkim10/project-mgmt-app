@@ -1,21 +1,25 @@
-import React from 'react';
+import Spinner from './Spinner';
 import { useQuery } from '@apollo/client';
+import ProjectCard from './ProjectCard';
 import { GET_PROJECTS } from '../queries/projectQueries';
-import { Loading } from './Loading';
-import { ProjectCard } from './ProjectCard';
 
-export const Projects = () => {
+export default function Projects() {
   const { loading, error, data } = useQuery(GET_PROJECTS);
 
-  if (loading) return <Loading />;
-  if (error) return <p>Error: {error.message}</p>;
-  if (!data?.projects?.length) return 'No projects';
+  if (loading) return <Spinner />;
+  if (error) return <p>Something Went Wrong</p>;
 
   return (
-    <div className="row mt-4">
-      {data.projects.map((project) => {
-        return <ProjectCard key={project.id} project={project} />;
-      })}
-    </div>
+    <>
+      {data.projects.length > 0 ? (
+        <div className='row mt-4'>
+          {data.projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+      ) : (
+        <p>No Projects</p>
+      )}
+    </>
   );
-};
+}
